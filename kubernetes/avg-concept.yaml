@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pogokwetter
+  labels:
+    name: pogokwetter
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: avg-concept
+  namespace: pogokwetter
+  labels:
+    app: avg-concept
+    tier: backend
+spec:
+  ports:
+    - port: 8087
+      targetPort: 8087
+  selector:
+    app: avg-concept
+    tier: backend
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: avg-concept
+  namespace: pogokwetter
+spec:
+  selector:
+    matchLabels:
+      app: avg-concept
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: avg-concept
+        tier: backend
+    spec:
+      containers:
+        - name: avg-concept
+          image: ghcr.io/teunbuis-semester6-pogokwetter/avg-concept:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8087
+---
